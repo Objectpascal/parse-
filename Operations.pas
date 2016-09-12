@@ -12,7 +12,7 @@ type
   end;
 
 const
- ArrOperator: array [0 .. 11] of Toperator =
+ ArrOperator: array [0 .. 12] of Toperator =
   (
      (ch: '^'; priority: 3; NumArg: 2)
     ,(ch: '*'; priority: 2; NumArg: 2)
@@ -26,6 +26,8 @@ const
     ,(ch:'tan';priority:3;NumArg:1)
     ,(ch:'ln';priority:3;NumArg:1)
     ,(ch:'pi';priority:3;NumArg:0)
+    ,(ch:'power';priority:3;NumArg:2)
+
 
     );
 
@@ -67,7 +69,7 @@ type
   public
     constructor create(str: string);
     procedure fill();
-    procedure CalcResult();
+    function CalcResult():double;
     procedure setNewString(const str: string);
     procedure displayStack;
     procedure DisplayPostfin;
@@ -204,13 +206,15 @@ begin
     FStack.Push(FloatToStr(res));
 end;
 
-procedure TequationParsing.CalcResult;
+function TequationParsing.CalcResult:double;
 var
   count: integer;
   max: integer;
   val: string;
+  strNum:string;
 
 begin
+result:=0;
   fill();
   max := Fpostfin.getTop;
   for count := 0 to max do
@@ -227,6 +231,8 @@ begin
       // displayStack
     end;
   end;
+  strNum:=self.FStack.getString(FStack.getTop());
+  result:=strToFloat(strNum);
 end;
 
 constructor TequationParsing.create(str: string);
@@ -309,6 +315,7 @@ begin
       len_index := getEndOfNumber(copyStr, pos_index + 1);
 
       val := Copy(copyStr, pos_index, len_index);
+      val:=StringReplace(val,',','',[]);
       if isOperation(val) then
       begin
         writeln('add op:', val);
@@ -338,7 +345,7 @@ begin
   for count := strPos to length(str) do
   begin
     val := str[count];
-    if isOperation(val) or (val = '(') or (val = ')') then
+    if isOperation(val) or (val = '(') or (val = ')') or (val=',') then
     begin
       result := count - 1;
       break;
@@ -388,6 +395,10 @@ begin
   else if UpperCase(op) = 'LN' then
   begin
     result := ln(num1);
+  end
+  else if UpperCase(op) = 'POWER' then
+  begin
+    result := power(num1,num2);
   end;
 end;
 
