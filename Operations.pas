@@ -15,9 +15,9 @@ const
   ,(ch:'/';priority:2;NumArg:2)
   ,(ch:'+';priority:1;NumArg:2)
   ,(ch:'-';priority:1;NumArg:2)
-  ,(ch:'sqrt';priority:3;NumArg:1)
-  ,(ch:'cos';priority:3;NumArg:1)
-  ,(ch:'sin';priority:3;NumArg:1)
+  ,(ch:'sqrt';priority:0;NumArg:1)
+  ,(ch:'cos';priority:0;NumArg:1)
+  ,(ch:'sin';priority:0;NumArg:1)
   );
 type
 TArrStack=array of string;
@@ -43,7 +43,7 @@ TstackClass=class
         Fstr:string;
        function getOperationMethod(const op:string;num1:double;num2:double=0):double;
        function isOperation(op:string):boolean;
-       function getEnfOfNumber(const str:string;strPos:integer):integer;
+       function getEndOfNumber(const str:string;strPos:integer):integer;
        function isOperation_haveArg(op:string;NumArgs:integer):boolean;
        procedure CalcOperation(op:string);
        procedure addOperation(op:string);
@@ -199,7 +199,7 @@ begin
   inherited create;
   Fstack:=TstackClass.create;
   Fpostfin:=TstackClass.create;
-  Fstr:=str;
+  setNewString(str);
 end;
 
 destructor TequationParsing.Destroy;
@@ -257,8 +257,7 @@ begin
         pos_index:=1;
         len_index:=1;
         val:=Copy(copyStr,pos_index,len_index);
-          if isOperation(val) then
-
+         if isOperation(val) then
             begin
               writeln('add op:',val);
               addOperation(val);
@@ -273,16 +272,16 @@ begin
             end
           else
             begin
-                len_index:=getEnfOfNumber(copyStr,pos_index+1);
+                len_index:=getEndOfNumber(copyStr,pos_index+1);
+
                 val:=Copy(copyStr,pos_index,len_index);
                 if isOperation(val) then
-
                 begin
                   writeln('add op:',val);
                   addOperation(val);
                 end
                 else
-                Fpostfin.Push(val);
+                  Fpostfin.Push(val);
             end;
 
             copyStr:=Copy(copyStr,len_index+1,length(copyStr));
@@ -295,7 +294,7 @@ begin
 
 end;
 
-function TequationParsing.getEnfOfNumber(const str: string;
+function TequationParsing.getEndOfNumber(const str: string;
   strPos: integer): integer;
   var
     count:integer;
@@ -413,6 +412,7 @@ begin
   Fstack.clearStack;
   Fpostfin.clearStack;
   Fstr:=str;
+  Fix_Input();
 end;
 
 end.
