@@ -12,7 +12,7 @@ type
   end;
 
 const
- ArrOperator: array [0 .. 9] of Toperator =
+ ArrOperator: array [0 .. 11] of Toperator =
   (
      (ch: '^'; priority: 3; NumArg: 2)
     ,(ch: '*'; priority: 2; NumArg: 2)
@@ -24,6 +24,8 @@ const
     ,(ch: 'sin'; priority: 3; NumArg: 1)
     ,(ch:'exp';priority:3;NumArg:1)
     ,(ch:'tan';priority:3;NumArg:1)
+    ,(ch:'ln';priority:3;NumArg:1)
+    ,(ch:'pi';priority:3;NumArg:0)
 
     );
 
@@ -167,28 +169,39 @@ var
   num1_Val, num2_Val: double;
   res: double;
 begin
-  Strnum2 := FStack.pop;
-  num2_Val := StrToFloat(Strnum2);
+
+ res:=0;
+ if isOperation_haveArg(op, 0) then
+  begin
+    res := getOperationMethod(op,0);
+  end
+  else
+  if isOperation_haveArg(op, 1) then
+  begin
+    Strnum1 := FStack.pop;
+    num1_Val := StrToFloat(Strnum1);
+    res := getOperationMethod(op, num1_Val);
+  end
+  else
   if isOperation_haveArg(op, 2) then
   begin
-  try
-  if not FStack.isEmpty then
+    try
     Strnum1 := FStack.pop;
-    if trim(Strnum1)='' then
-      num1_Val:=0
-    else
-      num1_Val := StrToFloat(Strnum1);
-  except
-    num1_Val:=0;
+    num1_Val := StrToFloat(Strnum1);
+    if not FStack.isEmpty then
+      Strnum2 := FStack.pop;
+      if trim(Strnum2)='' then
+        num2_Val:=0
+      else
+        num2_Val := StrToFloat(Strnum2);
+    except
+      num2_Val:=0;
 
+    end;
+    res := getOperationMethod(op,num2_Val,num1_Val);
   end;
-    res := getOperationMethod(op, num1_Val, num2_Val);
-  end
-  else if isOperation_haveArg(op, 1) then
-  begin
-    res := getOperationMethod(op, num2_Val);
-  end;
-  FStack.Push(FloatToStr(res));
+
+    FStack.Push(FloatToStr(res));
 end;
 
 procedure TequationParsing.CalcResult;
@@ -367,6 +380,14 @@ begin
   else if UpperCase(op) = 'TAN' then
   begin
     result := Tan(num1);
+  end
+   else if UpperCase(op) = 'PI' then
+  begin
+    result := pi;
+  end
+  else if UpperCase(op) = 'LN' then
+  begin
+    result := ln(num1);
   end;
 end;
 
