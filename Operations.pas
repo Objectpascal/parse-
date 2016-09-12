@@ -15,9 +15,9 @@ const
   ,(ch:'/';priority:2;NumArg:2)
   ,(ch:'+';priority:1;NumArg:2)
   ,(ch:'-';priority:1;NumArg:2)
-  ,(ch:'sqrt';priority:0;NumArg:1)
-  ,(ch:'cos';priority:0;NumArg:1)
-  ,(ch:'sin';priority:0;NumArg:1)
+  ,(ch:'sqrt';priority:3;NumArg:1)
+  ,(ch:'cos';priority:3;NumArg:1)
+  ,(ch:'sin';priority:3;NumArg:1)
   );
 type
 TArrStack=array of string;
