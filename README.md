@@ -1,5 +1,5 @@
 # parse-
-this proje was created in 09/12/2016
+this project was created in 09/12/2016
 parse and calculate  math formula as string 
 Example:
 'cos(pi)-(4^3)*power(4,3)'
